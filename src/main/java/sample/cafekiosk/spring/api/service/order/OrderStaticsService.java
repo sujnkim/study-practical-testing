@@ -19,19 +19,16 @@ public class OrderStaticsService {
 
 
     public boolean sendOrderStatisticsMail(LocalDate orderDate, String email) {
-        // 해당 일자에 결제 완료된 주문을 가져온다
         List<Order> orders = orderRepository.findOrdersBy(
                 orderDate.atStartOfDay(),
                 orderDate.plusDays(1).atStartOfDay(),
                 OrderStatus.PAYMENT_COMPLETED
         );
 
-        // 총 매출 합계 계산
         int totalAmount = orders.stream()
                 .mapToInt(Order::getTotalPrice)
                 .sum();
 
-        // 메일 전송
         boolean result = mailService.sendMail(
                 "no-reply@cafekiosk.com",
                 email,
